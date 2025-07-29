@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ours Galary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .gallery-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            perspective: 1000px;
+        }
+
+        .instax-photo {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.1),
+                0 6px 20px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            padding: 15px 15px 60px 15px;
+            cursor: grab;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center center;
+            user-select: none;
+        }
+
+        .instax-photo:active {
+            cursor: grabbing;
+        }
+
+        .photo-image {
+            width: 100%;
+            height: 250px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Individual photo positioning and rotation */
+        .instax-photo:nth-child(1) {
+            transform: rotate(-2deg) translateY(-5px);
+            z-index: 10;
+        }
+
+        .instax-photo:nth-child(2) {
+            transform: rotate(1deg) translateY(-2px) translateX(3px);
+            z-index: 9;
+        }
+
+        .instax-photo:nth-child(3) {
+            transform: rotate(-1deg) translateY(1px) translateX(-2px);
+            z-index: 8;
+        }
+
+        .instax-photo:nth-child(4) {
+            transform: rotate(2deg) translateY(3px) translateX(1px);
+            z-index: 7;
+        }
+
+        .instax-photo:nth-child(5) {
+            transform: rotate(-1.5deg) translateY(5px) translateX(-1px);
+            z-index: 6;
+        }
+
+        .instax-photo:nth-child(6) {
+            transform: rotate(0.5deg) translateY(7px) translateX(2px);
+            z-index: 5;
+        }
+
+        .swiping {
+            transition: none !important;
+            z-index: 20 !important;
+        }
+
+        .swipe-out-left {
+            transform: translateX(-150%) rotate(-45deg) !important;
+            opacity: 0 !important;
+        }
+
+        .swipe-out-right {
+            transform: translateX(150%) rotate(45deg) !important;
+            opacity: 0 !important;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 480px) {
+            .gallery-container {
+                width: 250px;
+                height: 350px;
+            }
+
+            .instax-photo {
+                width: 230px;
+                height: 330px;
+                padding: 12px 12px 50px 12px;
+            }
+
+            .photo-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        Swipe left or right to reveal photos
+    </div>
+
+    <div class="gallery-container">
+        <div class="instax-photo" data-index="0">
+            <div class="photo-image" style="background-image: url('YOUR_IMAGE_URL_1'); background-size: cover; background-position: center;"></div>
+            <div class="photo-caption">Your sweet angry face</div>
+        </div>
+
+        <div class="instax-photo" data-index="1">
+            <div class="photo-image" style="background-image: url('YOUR_IMAGE_URL_2'); background-size: cover; background-position: center;"></div>
+            <div class="photo-caption">Ek solo pose me click</div>
+        </div>
+
+        <div class="instax-photo" data-index="2">
+            <div class="photo-image" style="background-image: url('YOUR_IMAGE_URL_3'); background-size: cover; background-position: center;"></div>
+            <div class="photo-caption">Maybe one with <b>together</b> in it.</div>
+        </div>
+
+        <!--<div class="instax-photo" data-index="3">-->
+        <!--    <div class="photo-image" style="background: linear-gradient(45deg, #ffecd2, #fcb69f);"></div>-->
+        <!--    <div class="photo-caption">Golden Hour</div>-->
+        <!--</div>-->
+
+        <!--<div class="instax-photo" data-index="4">-->
+        <!--    <div class="photo-image" style="background: linear-gradient(45deg, #667eea, #764ba2);"></div>-->
+        <!--    <div class="photo-caption">Purple Rain</div>-->
+        <!--</div>-->
+
+        <!--<div class="instax-photo" data-index="5">-->
+        <!--    <div class="photo-image" style="background: linear-gradient(45deg, #f093fb, #f5576c);"></div>-->
+        <!--    <div class="photo-caption">Pink Dreams</div>-->
+        <!--</div>-->
+    </div>
+
+    <script>
+        class InstaxGallery {
+            constructor() {
+                this.photos = document.querySelectorAll('.instax-photo');
+                this.currentIndex = 0;
+                this.isAnimating = false;
+                this.startX = 0;
+                this.startY = 0;
+                this.currentX = 0;
+                this.currentY = 0;
+                this.isDragging = false;
+
+                this.init();
+            }
+
+            init() {
+                this.photos.forEach((photo, index) => {
+                    this.addEventListeners(photo);
+                });
+            }
+
+            addEventListeners(photo) {
+                // Mouse events
+                photo.addEventListener('mousedown', this.handleStart.bind(this));
+                document.addEventListener('mousemove', this.handleMove.bind(this));
+                document.addEventListener('mouseup', this.handleEnd.bind(this));
+
+                // Touch events
+                photo.addEventListener('touchstart', this.handleStart.bind(this), { passive: false });
+                document.addEventListener('touchmove', this.handleMove.bind(this), { passive: false });
+                document.addEventListener('touchend', this.handleEnd.bind(this));
+
+                // Prevent default drag behavior
+                photo.addEventListener('dragstart', e => e.preventDefault());
+            }
+
+            handleStart(e) {
+                if (this.isAnimating) return;
+
+                const touch = e.touches ? e.touches[0] : e;
+                this.startX = touch.clientX;
+                this.startY = touch.clientY;
+                this.isDragging = true;
+
+                const targetPhoto = e.target.closest('.instax-photo');
+                if (targetPhoto && parseInt(targetPhoto.dataset.index) === this.currentIndex) {
+                    this.currentPhoto = targetPhoto;
+                    this.currentPhoto.classList.add('swiping');
+                }
+
+                e.preventDefault();
+            }
+
+            handleMove(e) {
+                if (!this.isDragging || !this.currentPhoto || this.isAnimating) return;
+
+                const touch = e.touches ? e.touches[0] : e;
+                this.currentX = touch.clientX - this.startX;
+                this.currentY = touch.clientY - this.startY;
+
+                // Calculate rotation based on horizontal movement
+                const rotation = this.currentX * 0.1;
+                const currentRotation = this.getCurrentRotation(this.currentPhoto);
+
+                this.currentPhoto.style.transform = `
+                    translateX(${this.currentX}px) 
+                    translateY(${this.currentY * 0.3}px) 
+                    rotate(${currentRotation + rotation}deg)
+                `;
+
+                // Add opacity effect
+                const opacity = Math.max(0.3, 1 - Math.abs(this.currentX) / 300);
+                this.currentPhoto.style.opacity = opacity;
+
+                e.preventDefault();
+            }
+
+            handleEnd(e) {
+                if (!this.isDragging || !this.currentPhoto) return;
+
+                this.isDragging = false;
+                const threshold = 100;
+
+                if (Math.abs(this.currentX) > threshold) {
+                    this.swipePhoto(this.currentX > 0 ? 'right' : 'left');
+                } else {
+                    this.resetPhoto();
+                }
+
+                this.currentPhoto = null;
+                this.currentX = 0;
+                this.currentY = 0;
+            }
+
+            getCurrentRotation(element) {
+                const style = window.getComputedStyle(element);
+                const transform = style.transform;
+                
+                if (transform === 'none') return 0;
+                
+                const matrix = transform.match(/matrix\(([^)]+)\)/);
+                if (!matrix) return 0;
+                
+                const values = matrix[1].split(',').map(parseFloat);
+                const angle = Math.atan2(values[1], values[0]) * (180 / Math.PI);
+                return angle;
+            }
+
+            swipePhoto(direction) {
+                if (this.isAnimating) return;
+
+                this.isAnimating = true;
+                const photo = this.photos[this.currentIndex];
+                
+                photo.classList.remove('swiping');
+                photo.classList.add(direction === 'left' ? 'swipe-out-left' : 'swipe-out-right');
+
+                setTimeout(() => {
+                    photo.style.display = 'none';
+                    this.currentIndex++;
+                    
+                    if (this.currentIndex >= this.photos.length) {
+                        this.resetGallery();
+                    } else {
+                        this.bringNextPhotoToFront();
+                    }
+                    
+                    this.isAnimating = false;
+                }, 300);
+            }
+
+            resetPhoto() {
+                if (!this.currentPhoto) return;
+
+                this.currentPhoto.classList.remove('swiping');
+                this.currentPhoto.style.opacity = '';
+                
+                // Reset to original position with smooth transition
+                setTimeout(() => {
+                    this.currentPhoto.style.transform = '';
+                }, 10);
+            }
+
+            bringNextPhotoToFront() {
+                if (this.currentIndex < this.photos.length) {
+                    const nextPhoto = this.photos[this.currentIndex];
+                    nextPhoto.style.zIndex = 10;
+                    
+                    // Add subtle animation to bring next photo forward
+                    nextPhoto.style.transform = `
+                        ${nextPhoto.style.transform} 
+                        scale(1.02)
+                    `;
+                    
+                    setTimeout(() => {
+                        nextPhoto.style.transform = nextPhoto.style.transform.replace('scale(1.02)', '');
+                    }, 200);
+                }
+            }
+
+            resetGallery() {
+                // Reset all photos for another round
+                this.photos.forEach((photo, index) => {
+                    photo.style.display = '';
+                    photo.style.opacity = '';
+                    photo.style.transform = '';
+                    photo.classList.remove('swipe-out-left', 'swipe-out-right', 'swiping');
+                    photo.style.zIndex = 10 - index;
+                });
+                
+                this.currentIndex = 0;
+                
+                // Show completion message
+                this.showCompletionMessage();
+            }
+
+            showCompletionMessage() {
+                const message = document.createElement('div');
+                message.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(255, 255, 255, 0.95);
+                    padding: 20px 30px;
+                    border-radius: 15px;
+                    font-size: 16px;
+                    color: #333;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    backdrop-filter: blur(10px);
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                message.textContent = 'But I dont have any of them.... :C';
+                
+                document.body.appendChild(message);
+                
+                setTimeout(() => message.style.opacity = '1', 10);
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => document.body.removeChild(message), 300);
+                }, 2000);
+            }
+        }
+
+        // Initialize the gallery when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new InstaxGallery();
+        });
+    </script>
+</body>
+</html>
